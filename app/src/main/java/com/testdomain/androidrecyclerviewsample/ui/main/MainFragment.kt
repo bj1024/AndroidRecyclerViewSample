@@ -37,26 +37,7 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val imageids = arrayOf(
-            R.drawable.ic_baseline_apartment_24,
-            R.drawable.ic_baseline_audiotrack_24,
-            R.drawable.ic_baseline_cottage_24,
-            R.drawable.ic_baseline_error_outline_24,
-            R.drawable.ic_baseline_inbox_24,
-            R.drawable.ic_baseline_outlet_24,
-            R.drawable.ic_baseline_pedal_bike_24,
-            R.drawable.ic_launcher_foreground
-        )
 
-
-        val myDataList = mutableListOf<MyData>()
-        repeat((0..99).count()) {
-            myDataList.add(
-                    MyData("No.${it+1} ",
-                    "test",
-                        imageids.random()
-            ))
-        }
 
 
         val recyclerViewListH = view.findViewById<RecyclerView>(R.id.recycler_list_h)
