@@ -5,6 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.LifecycleOwner
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.testdomain.androidrecyclerviewsample.R
 
@@ -13,14 +16,22 @@ import com.testdomain.androidrecyclerviewsample.R
 // -
 
 
-class MyRecyclerViewAdapter(
-    private var myDataList: MutableList<MyData> = mutableListOf(),
+class MyRecyclerListAdapter(
+
     private var isVirtical: Boolean = true,
+) : ListAdapter<MyData, RecyclerView.ViewHolder>(DiffCallback) {
 
-//    var selectionTracker: SelectionTracker<String>? = null
-//            private val viewModel: MainViewModel
+    private object DiffCallback : DiffUtil.ItemCallback<MyData>() {
+        override fun areItemsTheSame(oldItem: MyData, newItem: MyData): Boolean {
+            return oldItem.id == newItem.id
+        }
 
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+        override fun areContentsTheSame(oldItem: MyData, newItem: MyData): Boolean {
+            return oldItem == newItem
+        }
+
+    }
+
 
     enum class ViewType(val rawValue: Int) {
         Text(1),
@@ -40,19 +51,8 @@ class MyRecyclerViewAdapter(
         return super.getItemViewType(position)
     }
 
-    /**
-     * アイテム数を返す。
-     *
-     * @return アイテム数
-     */
-    override fun getItemCount(): Int = myDataList.size
+    override fun getItemCount() = currentList.size
 
-    /**
-     * positionのITEMを返す。
-     *
-     * @param position featureListの添字
-     */
-    fun getItem(position: Int) = myDataList[position]
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val vtype: ViewType = ViewType.fromInt(viewType)
@@ -79,14 +79,14 @@ class MyRecyclerViewAdapter(
     }
 
 
-
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val mydata = myDataList[position]
+        val mydata = getItem(position)
 
         if (holder is MyViewHolderInterface) {
-            holder.setData(position,mydata)
+            holder.setData(position, mydata)
         }
     }
+
 
     // ViewHolderサブクラスに、setDataを保持することを強制するためのInterface。
     interface MyViewHolderInterface {
@@ -105,7 +105,6 @@ class MyRecyclerViewAdapter(
             titleView.text = "${position + 1} ${data.title}"
             descView.text = data.desc
         }
-
     }
 
     /**
@@ -118,7 +117,6 @@ class MyRecyclerViewAdapter(
         val descView: TextView = view.findViewById(R.id.myimagetext_item_description)
 
 
-
         override fun setData(position: Int, data: MyData) {
 
             imageView.setImageResource(data.imageID)
@@ -127,8 +125,6 @@ class MyRecyclerViewAdapter(
 
             descView.text = data.desc
         }
-
-
     }
 }
 

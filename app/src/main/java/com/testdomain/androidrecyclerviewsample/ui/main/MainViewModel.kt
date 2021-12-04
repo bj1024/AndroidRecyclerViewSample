@@ -37,8 +37,6 @@ class MainViewModel : ViewModel() {
                 ))
         }
         _myDataList.value = ArrayList(myDatas)
-
-
     }
 
 
