@@ -2,6 +2,7 @@ package com.testdomain.androidrecyclerviewsample.ui.main
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -19,8 +20,12 @@ class MainFragment : Fragment() {
 
     private lateinit var viewModel: MainViewModel
 
-    private val recyclerViewAdapterListH = MyRecyclerListAdapter(false)
-    private val recyclerViewAdapterListV = MyRecyclerListAdapter(true)
+    private val recyclerViewAdapterListH = MyRecyclerListAdapter(false, { data ->
+        adapterOnClickH(data)
+    })
+    private val recyclerViewAdapterListV = MyRecyclerListAdapter(true, { data ->
+        adapterOnClickV(data)
+    })
 
 
     override fun onCreateView(
@@ -74,8 +79,14 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+    }
 
+    private fun adapterOnClickH(data: MyData) {
+        Log.d("MainFragment", "adapterOnClickH ${data.id}")
+    }
 
+    private fun adapterOnClickV(data: MyData) {
+        Log.d("MainFragment", "adapterOnClickV ${data.id}")
     }
 
 }

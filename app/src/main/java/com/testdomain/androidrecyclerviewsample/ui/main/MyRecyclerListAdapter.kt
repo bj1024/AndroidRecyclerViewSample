@@ -17,8 +17,9 @@ import com.testdomain.androidrecyclerviewsample.R
 
 
 class MyRecyclerListAdapter(
-
     private var isVirtical: Boolean = true,
+    private val onClick: (MyData) -> Unit
+
 ) : ListAdapter<MyData, RecyclerView.ViewHolder>(DiffCallback) {
 
     private object DiffCallback : DiffUtil.ItemCallback<MyData>() {
@@ -65,7 +66,7 @@ class MyRecyclerListAdapter(
 
                 val view = LayoutInflater.from(parent.context)
                     .inflate(res, parent, false)
-                return ViewTextHolder(view)
+                return ViewTextHolder(view, onClick)
             }
             ViewType.ImageText -> {
                 val res =
@@ -73,7 +74,7 @@ class MyRecyclerListAdapter(
 
                 val view = LayoutInflater.from(parent.context)
                     .inflate(res, parent, false)
-                return ViewImageTextHolder(view)
+                return ViewImageTextHolder(view, onClick)
             }
         }
     }
@@ -96,12 +97,26 @@ class MyRecyclerListAdapter(
     /**
      * 1要素分のViewを管理するViewHolder Class
      */
-    inner class ViewTextHolder(view: View) : RecyclerView.ViewHolder(view), MyViewHolderInterface {
+    inner class ViewTextHolder(
+        view: View,
+        private val onClick: (MyData) -> Unit
+    ) : RecyclerView.ViewHolder(view), MyViewHolderInterface {
         val titleView: TextView = view.findViewById(R.id.mytext_item_title)
         val descView: TextView = view.findViewById(R.id.mytext_item_description)
+        var current: MyData? = null
+
+        init {
+            itemView.setOnClickListener {
+                current?.let {
+                    onClick(it)
+                }
+            }
+        }
 
 
         override fun setData(position: Int, data: MyData) {
+            current = data
+
             titleView.text = "${position + 1} ${data.title}"
             descView.text = data.desc
         }
@@ -110,15 +125,27 @@ class MyRecyclerListAdapter(
     /**
      * 1要素分のViewを管理するViewHolder Class
      */
-    inner class ViewImageTextHolder(view: View) : RecyclerView.ViewHolder(view),
+    inner class ViewImageTextHolder(
+        view: View,
+        private val onClick: (MyData) -> Unit
+    ) : RecyclerView.ViewHolder(view),
         MyViewHolderInterface {
         val imageView: ImageView = view.findViewById(R.id.myimagetext_item_image)
         val titleView: TextView = view.findViewById(R.id.myimagetext_item_title)
         val descView: TextView = view.findViewById(R.id.myimagetext_item_description)
+        var current: MyData? = null
 
+        init {
+            itemView.setOnClickListener {
+                current?.let {
+                    onClick(it)
+                }
+            }
+        }
 
         override fun setData(position: Int, data: MyData) {
 
+            current = data
             imageView.setImageResource(data.imageID)
 
             titleView.text = "${position + 1} ${data.title}"
